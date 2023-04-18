@@ -3,8 +3,8 @@
 #--------------------------------------------------------------------------
 
 PROJECT(lab4)
-FILE(GLOB lab4_headers code/*.h *.jpg *.hpp)
-FILE(GLOB lab4_sources code/*.cc)
+FILE(GLOB lab4_headers code/*.h *.jpg )
+FILE(GLOB lab4_sources code/*.cc resources/*.vs resources/*.fs)
 
 SET(files_lab4 ${lab4_headers} ${lab4_sources})
 SOURCE_GROUP("lab4" FILES ${files_lab4})

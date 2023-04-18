@@ -12,6 +12,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
+#include "ShaderObject.h"
 
 const GLchar* vs =
 "#version 430\n"
@@ -90,7 +91,7 @@ namespace Example
 			glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
 			
 	
-			
+			/*
 			// setup vertex shader
 			this->vertexShader = glCreateShader(GL_VERTEX_SHADER);
 			GLint length = static_cast<GLint>(std::strlen(vs));
@@ -145,9 +146,9 @@ namespace Example
 			//glBindBuffer(GL_ARRAY_BUFFER, this->triangle);
 			//glBufferData(GL_ARRAY_BUFFER, sizeof(buf), buf, GL_STATIC_DRAW);
 			//glBindBuffer(GL_ARRAY_BUFFER, 0);
-			return true;
+			return true;*/
 		}
-		return false;
+		return true;
 	}
 
 	//------------------------------------------------------------------------------
@@ -156,7 +157,7 @@ namespace Example
 	void
 		ExampleApp::Run()
 	{
-		
+		ShaderObject shader("./resources/vertexshader.vs", "./resources/fragmentshader.fs");
 		
 		mesh.genvertexarray();
 		mesh.genvertexbuffer();
@@ -220,11 +221,12 @@ namespace Example
 		std::cout << tex.texID << "\n";
 		std::cout << tex2.texID << "\n";
 		
-		glUseProgram(this->program);
+		//glUseProgram(this->program);
+		shader.use();
 
-		glUniform1i(glGetUniformLocation(this->program, "texture1"), 0);
+		glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
 
-		glUniform1i(glGetUniformLocation(this->program, "texture2"), 1);
+		glUniform1i(glGetUniformLocation(shader.ID, "texture2"), 1);
 		Matrix4D projection = projection.perspective(75.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 		//glm::mat4 projection = glm::perspective(glm::radians(75.0f), (float)800 / (float)600, 0.1f, 100.0f);
 		Camera cam(Vector4D(0.0f, 0.0f, -3.0f), Vector4D(0.0f, 0.0f, 0.0f));
@@ -271,9 +273,9 @@ namespace Example
 			//glm::mat4 view = glm::mat4(1.0f);
 			//view = glm::lookAt(glm::vec3(0.0f, camX, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-			unsigned int modelLoc = glGetUniformLocation(this->program, "model");
-			unsigned int viewLoc = glGetUniformLocation(this->program, "view");
-			unsigned int projectionLoc = glGetUniformLocation(this->program, "projection");
+			unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
+			unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
+			unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
 
 
 
