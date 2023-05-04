@@ -13,6 +13,7 @@
 #include <glm/gtc/type_ptr.hpp>
 #include "Camera.h"
 #include "ShaderObject.h"
+#include "GraphicsNode.h"
 
 const GLchar* vs =
 "#version 430\n"
@@ -157,9 +158,9 @@ namespace Example
 	void
 		ExampleApp::Run()
 	{
-		ShaderObject shader("./resources/vertexshader.vs", "./resources/fragmentshader.fs");
+		//ShaderObject shader("./resources/vertexshader.vs", "./resources/fragmentshader.fs");
 		
-		mesh.genvertexarray();
+		/*mesh.genvertexarray();
 		mesh.genvertexbuffer();
 		mesh.genindexbuffer();
 		mesh.setattrib();
@@ -177,7 +178,7 @@ namespace Example
 			std::cout << stbi_failure_reason() << "\n";
 			std::cout << "Nice shootin' Tex" << "\n";
 		}
-		stbi_image_free(tex.texPictureData);
+		stbi_image_free(tex.texPictureData);*/
 
 		/*unsigned int texture2;
 		int width, height, nrChannels;
@@ -205,7 +206,7 @@ namespace Example
 		}
 		stbi_image_free(data);*/
 
-		tex2.bindTex();
+		/*tex2.bindTex();
 		tex2.setTexParam();
 		tex2.texPictureData = stbi_load("./resources/face.png", &tex2.width, &tex2.height, &tex2.nChannels, 0);
 		if (tex2.texPictureData) {
@@ -219,20 +220,26 @@ namespace Example
 		stbi_image_free(tex2.texPictureData);
 
 		std::cout << tex.texID << "\n";
-		std::cout << tex2.texID << "\n";
+		std::cout << tex2.texID << "\n";*/
 		
 		//glUseProgram(this->program);
-		shader.use();
+		//shader.use();
 
-		glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
+		/*glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
 
-		glUniform1i(glGetUniformLocation(shader.ID, "texture2"), 1);
+		glUniform1i(glGetUniformLocation(shader.ID, "texture2"), 1);*/
 		Matrix4D projection = projection.perspective(75.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 		//glm::mat4 projection = glm::perspective(glm::radians(75.0f), (float)800 / (float)600, 0.1f, 100.0f);
 		Camera cam(Vector4D(0.0f, 0.0f, -3.0f), Vector4D(0.0f, 0.0f, 0.0f));
+		GraphicsNode gn(MeshResource(), TextureResource(), ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"), Matrix4D());
+		GraphicsNode gn2(MeshResource(), TextureResource(), ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"), Matrix4D());
+		gn2.setTransform(Vector4D(-1.3f, 1.0f, -1.5f));
+		gn.bindGraphics();
+		gn2.bindGraphics();
 
-		glEnable(GL_DEPTH_TEST);
-		glDepthFunc(GL_LESS);
+		
+		//glEnable(GL_DEPTH_TEST);
+		//glDepthFunc(GL_LESS);
 
 
 		while (this->window->IsOpen())
@@ -248,17 +255,18 @@ namespace Example
 			///| (_| | (_) | \__ \ |_| |_| | | | |  
 			/// \__,_|\___/  |___/\__|\__,_|_| |_|  
 			
+			
 
 			//glBindVertexArray(mesh.vertexarray);
 			//mesh.genvertexarray();
 			//glActiveTexture(GL_TEXTURE0);
 			//glBindTexture(GL_TEXTURE_2D, tex.texID
 		
-			Matrix4D model;
-			//glm::mat4 model = glm::mat4(1.0f);
-			
+			//Matrix4D model;
+			////glm::mat4 model = glm::mat4(1.0f);
+			//
 
-			
+			//
 
 			float radius = 10;
 
@@ -267,52 +275,55 @@ namespace Example
 			std::cout << camZ << "\n";
 
 
-			//Matrix4D view = view.lookat(Vector4D(camX, 0.0f, camZ), Vector4D(0.0f, 0.0f, 0.0f), Vector4D(0.0f, 1.0f, 0.0f));
+			Matrix4D view = view.lookat(Vector4D(camX, 0.0f, camZ), Vector4D(0.0f, 0.0f, 0.0f), Vector4D(0.0f, 1.0f, 0.0f));
 			cam.setPosition(Vector4D(camX, 0.0f, camZ));
 			cam.setView();
 			//glm::mat4 view = glm::mat4(1.0f);
 			//view = glm::lookAt(glm::vec3(0.0f, camX, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
-			unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
-			unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
-			unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
+			//unsigned int modelLoc = glGetUniformLocation(shader.ID, "model");
+			//unsigned int viewLoc = glGetUniformLocation(shader.ID, "view");
+			//unsigned int projectionLoc = glGetUniformLocation(shader.ID, "projection");
 
 
 
-			std::cout << "MODEL------------" << "\n";
-			//model.print();
-			std::cout << "----------------" << "\n";
+			//std::cout << "MODEL------------" << "\n";
+			////model.print();
+			//std::cout << "----------------" << "\n";
 
-			std::cout << "VIEW------------" << "\n";
-			//view.print();
+			//std::cout << "VIEW------------" << "\n";
+			////view.print();
 
-			for (int i = 0; i < 4; ++i)
-				for (int j = 0; j < 4; ++j)
-				{
-					std::cout << " " << cam.getView()[i][j];
-					if (j == 3)
-						std::cout << "\n" << "\n";
-				}
-			std::cout << "--------" << "\n";
+			//for (int i = 0; i < 4; ++i)
+			//	for (int j = 0; j < 4; ++j)
+			//	{
+			//		std::cout << " " << cam.getView()[i][j];
+			//		if (j == 3)
+			//			std::cout << "\n" << "\n";
+			//	}
+			//std::cout << "--------" << "\n";
 
-			std::cout << "----------------" << "\n";
+			//std::cout << "----------------" << "\n";
 
-			std::cout << "PROJECTION------------" << "\n";
-			//projection.print();
-			std::cout << "----------------" << "\n";
+			//std::cout << "PROJECTION------------" << "\n";
+			////projection.print();
+			//std::cout << "----------------" << "\n";
 
 
-			glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
-			glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &cam.getView()[0][0]);
-			glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &projection[0][0]);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, tex.texID);
-			glActiveTexture(GL_TEXTURE1);
-			glBindTexture(GL_TEXTURE_2D, tex2.texID);
-			
+			//glUniformMatrix4fv(modelLoc, 1, GL_FALSE, &model[0][0]);
+			//glUniformMatrix4fv(viewLoc, 1, GL_FALSE, &cam.getView()[0][0]);
+			//glUniformMatrix4fv(projectionLoc, 1, GL_FALSE, &projection[0][0]);
+			//glActiveTexture(GL_TEXTURE0);
+			//glBindTexture(GL_TEXTURE_2D, tex.texID);
+			//glActiveTexture(GL_TEXTURE1);
+			//glBindTexture(GL_TEXTURE_2D, tex2.texID);
+			//
 
-			glBindVertexArray(mesh.vertexarray);
-			glDrawArrays(GL_TRIANGLES, 0, 36);
+			gn.draw(cam, projection);
+			gn2.draw(cam, projection);
+
+			//glBindVertexArray(mesh.vertexarray);
+			//glDrawArrays(GL_TRIANGLES, 0, 36);
 			//glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 

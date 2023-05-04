@@ -63,9 +63,9 @@ public:
 	};
 
 
-	unsigned int vertexarray;
-	unsigned int vertexbuffer;
-	unsigned int indexbuffer;
+	unsigned int vertexarray = 0;
+	unsigned int vertexbuffer = 0;
+	unsigned int indexbuffer = 0;
 
 	void setattrib();
 

@@ -1,5 +1,14 @@
 #include "Camera.h"
 
+Camera::Camera() {
+
+}
+
+Camera::Camera(Vector4D cameraPosition, Vector4D cameraTarget) {
+	camPos = cameraPosition;
+	camTarget = cameraTarget;
+}
+
 Matrix4D& Camera::getPerspRef()
 {
 	return perspective;

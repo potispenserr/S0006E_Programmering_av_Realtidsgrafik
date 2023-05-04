@@ -1,12 +1,12 @@
+#pragma once
 #include "Matrix4D.h"
 class Camera
 {
 public:
-	Camera(Vector4D cameraPosition, Vector4D cameraTarget)
-	{
-		camPos = cameraPosition;
-		camTarget = cameraTarget;
-	}
+	Camera();
+
+	Camera(Vector4D cameraPosition, Vector4D cameraTarget);
+
 
 	~Camera()
 	{
