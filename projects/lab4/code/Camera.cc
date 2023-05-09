@@ -4,10 +4,14 @@ Camera::Camera() {
 
 }
 
-Camera::Camera(Vector4D cameraPosition, Vector4D cameraTarget) {
+Camera::Camera(Vector4D cameraPosition, Vector4D cameraTarget, Vector4D cameraFront, Vector4D cameraUp)
+{
 	camPos = cameraPosition;
 	camTarget = cameraTarget;
+	camFront = cameraFront;
+	camUp = cameraUp;
 }
+
 
 Matrix4D& Camera::getPerspRef()
 {
@@ -40,7 +44,7 @@ void Camera::setView(Matrix4D newView)
 }
 void Camera::setView()
 {
-	view = view.lookat(camPos, camTarget, Vector4D(0.0f, 1.0f, 0.0f));
+	view = view.lookat(camPos, camPos + camFront, Vector4D(0.0f, 1.0f, 0.0f));
 }
 
 Vector4D Camera::getPosition()

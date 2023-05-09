@@ -5,7 +5,7 @@ class Camera
 public:
 	Camera();
 
-	Camera(Vector4D cameraPosition, Vector4D cameraTarget);
+	Camera(Vector4D cameraPosition, Vector4D cameraTarget, Vector4D cameraFront, Vector4D cameraUp);
 
 
 	~Camera()
@@ -26,6 +26,8 @@ public:
 
 	Vector4D camPos;
 	Vector4D camTarget;
+	Vector4D camFront;
+	Vector4D camUp;
 
 
 

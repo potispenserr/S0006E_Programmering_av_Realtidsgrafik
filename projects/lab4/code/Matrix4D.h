@@ -453,6 +453,13 @@ public:
 
 	}
 
+	Matrix4D scale(Vector4D v) {
+		return Matrix4D(v.x(), 0.0f, 0.0f, 0.0f,
+						0.0f, v.y(), 0.0f, 0.0f,
+						0.0f, 0.0f, v.z(), 0.0f,
+						0.0f, 0.0f, 0.0f,  1.0f);
+	}
+
 	///
 	///Rotation around x-axis
 	///

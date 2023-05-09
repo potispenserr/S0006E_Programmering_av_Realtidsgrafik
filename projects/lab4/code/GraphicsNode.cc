@@ -60,6 +60,15 @@ void GraphicsNode::setTransform(Vector4D newTransform)
 {
 	transform = transform.translation(newTransform);
 }
+void GraphicsNode::setTransform(Matrix4D newTransform)
+{
+	transform = newTransform;
+}
+
+Matrix4D& GraphicsNode::getTransform()
+{
+	return transform;
+}
 
 void GraphicsNode::bindGraphics()
 {

@@ -157,7 +157,7 @@ public:
 	///
 	/// Returns a vector from cross multiplication
 	///
-	Vector4D cross(const Vector4D& a, const Vector4D& b) {
+	static Vector4D cross(const Vector4D& a, const Vector4D& b) {
 		Vector4D cross;
 		cross.vecarray[0] =  (a.vecarray[1] * b.vecarray[2]) - (a.vecarray[2] * b.vecarray[1]);
 		cross.vecarray[1] =  (a.vecarray[2] * b.vecarray[0]) - (a.vecarray[0] * b.vecarray[2]);

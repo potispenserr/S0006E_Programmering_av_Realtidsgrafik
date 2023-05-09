@@ -5,15 +5,12 @@
 #include "config.h"
 #include "exampleapp.h"
 #include <cstring>
-#include "Matrix4D.h"
-#include "Vector4D.h"
 #include "stb_image.h"
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "Camera.h"
-#include "ShaderObject.h"
-#include "GraphicsNode.h"
+
+
 
 const GLchar* vs =
 "#version 430\n"
@@ -70,9 +67,9 @@ namespace Example
 	{
 		App::Open();
 		this->window = new Display::Window;
-		window->SetKeyPressFunction([this](int32, int32, int32, int32)
+		window->SetKeyPressFunction([this](int32 asciikey, int32 argb, int32 status, int32 mod)
 		{
-			this->window->Close();
+			
 		});
 
 		
@@ -227,19 +224,46 @@ namespace Example
 
 		/*glUniform1i(glGetUniformLocation(shader.ID, "texture1"), 0);
 
+
+
 		glUniform1i(glGetUniformLocation(shader.ID, "texture2"), 1);*/
 		Matrix4D projection = projection.perspective(75.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 		//glm::mat4 projection = glm::perspective(glm::radians(75.0f), (float)800 / (float)600, 0.1f, 100.0f);
-		Camera cam(Vector4D(0.0f, 0.0f, -3.0f), Vector4D(0.0f, 0.0f, 0.0f));
-		GraphicsNode gn(MeshResource(), TextureResource(), ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"), Matrix4D());
-		GraphicsNode gn2(MeshResource(), TextureResource(), ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"), Matrix4D());
+		//Camera cam(Vector4D(0.0f, 0.0f, 3.0f), Vector4D(0.0f, 0.0f, 0.0f), Vector4D(0.0f, 0.0f, -1.0f), Vector4D(0.0f, 1.0f, 0.0f));
+		cam.camPos = Vector4D(0.0f, 0.0f, 3.0f);
+		cam.camTarget = Vector4D(0.0f, 0.0f, 0.0f);
+		cam.camFront = Vector4D(0.0f, 0.0f, -1.0f);
+		cam.camUp = Vector4D(0.0f, 1.0f, 0.0f);
+
+		gn.setMesh(MeshResource());
+		gn.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
+		gn.setTexture(TextureResource());
+		gn.setTransform(Matrix4D());
+
+		gn2.setMesh(MeshResource());
+		gn2.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
+		gn2.setTexture(TextureResource());
+		gn2.setTransform(Matrix4D());
+		
 		gn2.setTransform(Vector4D(-1.3f, 1.0f, -1.5f));
 		gn.bindGraphics();
 		gn2.bindGraphics();
-
-		
+		gn.setTransform(gn.getTransform() * gn.getTransform().scale(Vector4D(2.0f, 1.0f, 1.0f)));
 		//glEnable(GL_DEPTH_TEST);
 		//glDepthFunc(GL_LESS);
+
+		int width;
+		int height;
+
+		this->window->GetSize(width, height);
+		std::cout << "width: " << width << " height: " << height << "\n";
+
+		float yaw = -90;
+		float pitch = 0;
+
+		float lastX = 512.0f;
+		float lastY = 384.0f;
+		bool firstRotation = true;
 
 
 		while (this->window->IsOpen())
@@ -247,6 +271,128 @@ namespace Example
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			this->window->Update();
+			currentFrame = glfwGetTime();
+			deltaTime = currentFrame - lastFrame;	
+			lastFrame = currentFrame;
+
+			
+
+			window->SetKeyPressFunction([this](int32 asciikey, int32 argb, int32 status, int32 mod)
+			{
+				std::cout << "asciikey: " << asciikey << " argb: " << argb << " status: " << status << " mod: " << mod << "\n";
+
+				const float camSpeed = 3.0f * deltaTime;
+
+				if (status == 1) {
+					switch (asciikey) {
+					case GLFW_KEY_W:
+						cam.camPos = cam.camPos + cam.camFront * camSpeed;
+						break;
+					case GLFW_KEY_A:
+						cam.camPos = cam.camPos - Vector4D::cross(cam.camFront, cam.camUp).norm() * camSpeed;
+						break;
+					case GLFW_KEY_S:
+						cam.camPos = cam.camPos - cam.camFront * camSpeed;
+						break;
+					case GLFW_KEY_D:
+						cam.camPos = cam.camPos + Vector4D::cross(cam.camFront, cam.camUp).norm() * camSpeed;
+						break;
+
+					}
+					
+				}
+				else if (status == 2) {
+					switch (asciikey) {
+					case GLFW_KEY_W:
+						cam.camPos = cam.camPos + cam.camFront * camSpeed;
+						break;
+					case GLFW_KEY_A:
+						cam.camPos = cam.camPos - Vector4D::cross(cam.camFront, cam.camUp).norm() * camSpeed;
+						break;
+					case GLFW_KEY_S:
+						cam.camPos = cam.camPos - cam.camFront * camSpeed;
+						break;
+
+					case GLFW_KEY_D:
+						cam.camPos = cam.camPos + Vector4D::cross(cam.camFront, cam.camUp).norm() * camSpeed;
+						break;
+					}
+
+				}
+
+			
+				
+				/*if (asciikey == GLFW_KEY_W && status == 1 || status == 2) {
+					std::cout << "tering" << "\n";
+					cam.camPos = cam.camPos + cam.camFront * camSpeed;
+				}
+
+				else if (asciikey == GLFW_KEY_S && status == 1 || status == 2) {
+					std::cout << "kanker" << "\n";
+					cam.camPos = cam.camPos - cam.camFront * camSpeed;
+				}*/
+
+				if (asciikey == 256 && status == 1) {
+					this->window->Close();
+				}
+			});
+			
+
+			window->SetMousePressFunction([this](int32 mousekey, int32 status, int32 keyc) {
+				std::cout << "mousekey: " << mousekey << " status: " << status << " keyc: " << keyc << "\n";
+				mousepress = mousekey;
+				mousestatus = status;
+				});
+
+			window->SetMouseMoveFunction([&](float64 mousex, float64 mousey) {
+
+				if (mousepress == 0 && mousestatus == 1) {
+
+					//std::cout << "mousex: " << mousex << " mousey: " << mousey << "\n";
+
+					if (firstRotation) {
+						lastX = mousex;
+						lastY = mousey;
+						firstRotation = false;
+					}
+
+
+					float xoffset = mousex - lastX;
+					float yoffset = lastY - mousey; 
+					lastX = mousex;
+					lastY = mousey;
+					const float speed = 0.1f;
+					xoffset *= speed;
+					yoffset *= speed;
+
+					yaw += xoffset;
+					pitch += yoffset;
+					
+
+					if (pitch > 89.0f) {
+						pitch = 89.0f;
+					}
+					if (pitch < -89.0f) {
+						pitch = -89.0f;
+					}
+
+					Vector4D direction;
+					float degrad = PI / 180;
+					direction.x() = cos(yaw * degrad) * cos(pitch * degrad);
+					direction.y() = sin(pitch * degrad);
+					direction.z() = sin(yaw * degrad) * cos(pitch * degrad);
+
+					cam.camFront = direction.norm();
+
+				}
+				
+				});
+			cam.setView();
+			gn.draw(cam, projection);
+			gn2.draw(cam, projection);
+			std::cout << "x: " << cam.camFront.x() << "y: " << cam.camFront.y() << "z: " << cam.camFront.z() << "\n";
+			//std::cout << "pitch: " << pitch << " yaw: " << yaw << "\n";
+
 
 			///     _             _          __  __ 
 			///    | |           | |        / _|/ _|
@@ -254,7 +400,6 @@ namespace Example
 			/// / _` |/ _ \  / __| __| | | |  _|  _|
 			///| (_| | (_) | \__ \ |_| |_| | | | |  
 			/// \__,_|\___/  |___/\__|\__,_|_| |_|  
-			
 			
 
 			//glBindVertexArray(mesh.vertexarray);
@@ -268,16 +413,16 @@ namespace Example
 
 			//
 
-			float radius = 10;
+			/*float radius = 10;
 
 			float camX = (float)(cos(glfwGetTime()) * radius);
-			float camZ = (float)(sin(glfwGetTime()) * radius);
-			std::cout << camZ << "\n";
+			float camZ = (float)(sin(glfwGetTime()) * radius);*/
+			//std::cout << camZ << "\n";
 
 
-			Matrix4D view = view.lookat(Vector4D(camX, 0.0f, camZ), Vector4D(0.0f, 0.0f, 0.0f), Vector4D(0.0f, 1.0f, 0.0f));
-			cam.setPosition(Vector4D(camX, 0.0f, camZ));
-			cam.setView();
+			//Matrix4D view = view.lookat(Vector4D(camX, 0.0f, camZ), Vector4D(0.0f, 0.0f, 0.0f), Vector4D(0.0f, 1.0f, 0.0f));
+			//cam.setPosition(Vector4D(camX, 0.0f, camZ));
+			
 			//glm::mat4 view = glm::mat4(1.0f);
 			//view = glm::lookAt(glm::vec3(0.0f, camX, camZ), glm::vec3(0.0f, 0.0f, 0.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
@@ -319,8 +464,7 @@ namespace Example
 			//glBindTexture(GL_TEXTURE_2D, tex2.texID);
 			//
 
-			gn.draw(cam, projection);
-			gn2.draw(cam, projection);
+			
 
 			//glBindVertexArray(mesh.vertexarray);
 			//glDrawArrays(GL_TRIANGLES, 0, 36);

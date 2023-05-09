@@ -29,6 +29,8 @@ public:
 	void setShader(ShaderObject newShader);
 
 	void setTransform(Vector4D newTransform);
+	void setTransform(Matrix4D newTransform);
+	Matrix4D& getTransform();
 
 	void bindGraphics();
 
