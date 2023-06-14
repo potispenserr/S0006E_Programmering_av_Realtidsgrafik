@@ -239,7 +239,8 @@ namespace Example
 		gn.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
 		gn.setTexture(TextureResource());
 		gn.setTransform(Matrix4D());
-		gn.loadObj("./resources/cube.obj");
+		gn.loadObj("./resources/CoronaFixed.obj");
+
 
 		/*gn2.setMesh(MeshResource());
 		gn2.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
@@ -249,7 +250,9 @@ namespace Example
 		//gn2.setTransform(Vector4D(-1.3f, 1.0f, -1.5f));
 		gn.bindGraphics();
 		//gn2.bindGraphics();
-		//gn.setTransform(gn.getTransform() * gn.getTransform().scale(Vector4D(2.0f, 1.0f, 1.0f)));
+		Matrix4D rot;
+		gn.setTransform(gn.getTransform() * gn.getTransform().scale(Vector4D(0.05f, 0.05f, 0.05f)));
+		gn.setTransform(gn.getTransform() * rot.rotz(90) * rot.rotx(130) * rot.roty(100));
 
 		//glEnable(GL_DEPTH_TEST);
 		//glDepthFunc(GL_LESS);

@@ -5,6 +5,19 @@
 #include "core/app.h"
 #include "render/window.h"
 #include "config.h"
+struct Vertex {
+    Vector4D position;
+    Vector4D meshNorm;
+    Vector4D texCoord;
+    Vertex(Vector4D newPos, Vector4D newNorm, Vector4D newTexCoord) :
+        position(newPos), meshNorm(newNorm), texCoord(newTexCoord) {}
+};
+
+struct Texture {
+    unsigned int id;
+    std::string type;
+};
+
 class MeshResource {
 public:
 	MeshResource() {
@@ -57,7 +70,7 @@ public:
         -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
 	};*/
 
-    std::vector<float> verticies;
+    std::vector<Vertex> verticies;
     std::vector<float> texels;
 
 	unsigned int indicies[6]{
@@ -79,5 +92,5 @@ public:
 
 	void genindexbuffer();
 
-    void setMesh(std::vector<float> verticies, std::vector<float> texels);
+    void setVerticies(std::vector<Vertex> verticies);
 };

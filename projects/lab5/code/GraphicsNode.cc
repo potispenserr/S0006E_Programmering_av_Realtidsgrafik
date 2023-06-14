@@ -2,9 +2,7 @@
 #include "stb_image.h"
 #include <fstream>
 #include <sstream>
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <stdexcept>
 
 GraphicsNode::GraphicsNode()
 {
@@ -81,16 +79,13 @@ void GraphicsNode::bindGraphics()
 	
 	//ShaderObject shader("./resources/vertexshader.vs", "./resources/fragmentshader.fs");
 
-	mesh.get()->genvertexarray();
-	mesh.get()->genvertexbuffer();
-	mesh.get()->genindexbuffer();
-	mesh.get()->setattrib();
+	
 
 	stbi_set_flip_vertically_on_load(true);
 
 	texture.get()->bindTex();
 	texture.get()->setTexParam();
-	texture.get()->texPictureData = stbi_load("./resources/container.jpg", &texture.get()->width, &texture.get()->height, &texture.get()->nChannels, 0);
+	texture.get()->texPictureData = stbi_load("./resources/BotellaText.jpg", &texture.get()->width, &texture.get()->height, &texture.get()->nChannels, 0);
 	if (texture.get()->texPictureData) {
 		texture.get()->loadTex(texture.get()->texPictureData);
 		std::cout << "Hey you actually hit something" << "\n";
@@ -147,14 +142,13 @@ void GraphicsNode::draw(Camera cam, Matrix4D projection)
 	glBindVertexArray(mesh.get()->vertexarray);
 	glDrawArrays(GL_TRIANGLES, 0, mesh.get()->verticies.size());
 
-
 }
 
 void GraphicsNode::loadObj(std::string pathToFile)
 {
-	std::vector<float> vertices;
-	std::vector<float> normals;
-	std::vector<float> texels;
+	std::vector<Vector4D> vertices;
+	std::vector<Vector4D> normals;
+	std::vector<Vector4D> texCoords;
 	std::vector<int> vertIndicies;
 	std::vector<int> normIndicies;
 	std::vector<int> texIndicies;
@@ -165,10 +159,10 @@ void GraphicsNode::loadObj(std::string pathToFile)
 		int lineNumber = 1;
 
 		while (std::getline(file, line)) { 
-			std::cout << lineNumber << ": " << line << "\n";
+			//std::cout << lineNumber << ": " << line << "\n";
 			std::string lineToken = line.substr(0, 2);
 			lineToken.erase(std::remove_if(lineToken.begin(), lineToken.end(), isspace), lineToken.end());
-			std::cout << lineToken << "\n";
+			//std::cout << lineToken << "\n";
 			if (lineToken == "v") {
 				std::vector<size_t> lineSpaces;
 				std::string vertexPosition;
@@ -176,12 +170,13 @@ void GraphicsNode::loadObj(std::string pathToFile)
 				lineSpaces.push_back(line.find(" ", lineSpaces[0] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[1] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[2] + 1));
-				std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2) << "Z" << "\n";
+				/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2) << "Z" << "\n";
 				std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)) << "Z" << "\n";
-				std::cout << "third vertex position:" << line.substr(lineSpaces[2] + 1, line.size()) << "Z" << "\n";
-				vertices.push_back(std::stof(line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2)));
-				vertices.push_back(std::stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1))));
-				vertices.push_back(std::stof(line.substr(lineSpaces[2] + 1, line.size())));
+				std::cout << "third vertex position:" << line.substr(lineSpaces[2] + 1, line.size()) << "Z" << "\n";*/
+				float x = std::stof(line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2));
+				float y = std::stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)));
+				float z = std::stof(line.substr(lineSpaces[2] + 1, line.size()));
+				vertices.push_back(Vector4D(x, y, z));
 
 			}
 			if (lineToken == "vn") {
@@ -194,9 +189,10 @@ void GraphicsNode::loadObj(std::string pathToFile)
 				/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 2)) << "Z" << "\n";
 				std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)) << "Z" << "\n";
 				std::cout << "third vertex position:" << line.substr(lineSpaces[2] + 1, line.size()) << "Z" << "\n";*/
-				normals.push_back(std::stof(line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 2))));
-				normals.push_back(std::stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1))));
-				normals.push_back(std::stof(line.substr(lineSpaces[2] + 1, line.size())));
+				float x = std::stof(line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2));
+				float y = std::stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)));
+				float z = std::stof(line.substr(lineSpaces[2] + 1, line.size()));
+				normals.push_back(Vector4D(x, y, z));
 			}
 			if (lineToken == "vt") {
 				std::vector<size_t> lineSpaces;
@@ -205,17 +201,19 @@ void GraphicsNode::loadObj(std::string pathToFile)
 				lineSpaces.push_back(line.find(" ", lineSpaces[0] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[1] + 1));
 				if (lineSpaces[2] == UINT64_MAX) {
-					std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)) << "Z" << "\n";
-					std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, line.size()) << "Z" << "\n";
-					texels.push_back(std::stof(line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1))));
-					texels.push_back(std::stof(line.substr(lineSpaces[1] + 1, line.size())));
+					/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)) << "Z" << "\n";
+					std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, line.size()) << "Z" << "\n";*/
+					float x = std::stof(line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)));
+					float y = std::stof(line.substr(lineSpaces[1] + 1, line.size()));
+					texCoords.push_back(Vector4D(x, y, 0.0f, 0.0f));
 					continue;
 				}
 				//why even have a third texel AAAHHH
-				std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)) << "Z" << "\n";
-				std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)) << "Z" << "\n";
-				texels.push_back(stof(line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1))));
-				texels.push_back(stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1))));
+				/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)) << "Z" << "\n";
+				std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)) << "Z" << "\n"*/
+				float x = stof(line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)));
+				float y = stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)));
+				texCoords.push_back(Vector4D(x, y, 0.0f, 0.0f));
 				
 			}
 			if (lineToken == "f") {
@@ -229,31 +227,35 @@ void GraphicsNode::loadObj(std::string pathToFile)
 				for (int i = 0; i < 5; i++) {
 					slashPos.push_back(line.find("/", slashPos[i] + 1));
 				}
-				std::cout << "slashes found at:";
+				/*std::cout << "slashes found at:";
 				for (int i = 0; i < 5; i++) {
 					std::cout << " " << slashPos[i] << " ";
+				}*/
+				if (slashPos[4] == UINT64_MAX) {
+					std::cout << "\n";
+					throw std::invalid_argument("Faces is not in the format of X/Y/Z");
 				}
 				std::cout << "\n";
-				std::cout << "first vertex: " << line.substr(lineSpaces[0] + 1, (slashPos[0]) - (lineSpaces[0] + 1)) << "\n";
+				/*std::cout << "first vertex: " << line.substr(lineSpaces[0] + 1, (slashPos[0]) - (lineSpaces[0] + 1)) << "\n";
 				std::cout << "first tex: " << line.substr(slashPos[0] + 1, (slashPos[1]) - (slashPos[0] + 1)) << "\n";
-				std::cout << "first norm: " << line.substr(slashPos[1] + 1, (lineSpaces[1]) - (slashPos[1] + 1)) << "\n";
+				std::cout << "first norm: " << line.substr(slashPos[1] + 1, (lineSpaces[1]) - (slashPos[1] + 1)) << "\n";*/
 
 				vertIndicies.push_back(std::stof(line.substr(lineSpaces[0] + 1, (slashPos[0]) - (lineSpaces[0] + 1))));
 				texIndicies.push_back(std::stof(line.substr(slashPos[0] + 1, (slashPos[1]) - (slashPos[0] + 1))));
 				normIndicies.push_back(std::stof(line.substr(slashPos[1] + 1, (lineSpaces[1]) - (slashPos[1] + 1))));
 				
 
-				std::cout << "second vertex: " << line.substr(lineSpaces[1] + 1, (slashPos[2]) - (lineSpaces[1] + 1)) << "\n";
+				/*std::cout << "second vertex: " << line.substr(lineSpaces[1] + 1, (slashPos[2]) - (lineSpaces[1] + 1)) << "\n";
 				std::cout << "second tex: " << line.substr(slashPos[2] + 1, (slashPos[3]) - (slashPos[2] + 1)) << "\n";
-				std::cout << "second norm: " << line.substr(slashPos[3] + 1, (lineSpaces[2]) - (slashPos[3] + 1)) << "\n";
+				std::cout << "second norm: " << line.substr(slashPos[3] + 1, (lineSpaces[2]) - (slashPos[3] + 1)) << "\n";*/
 
 				vertIndicies.push_back(std::stof(line.substr(lineSpaces[1] + 1, (slashPos[2]) - (lineSpaces[1] + 1))));
 				texIndicies.push_back(std::stof(line.substr(slashPos[2] + 1, (slashPos[3]) - (slashPos[2] + 1))));
 				normIndicies.push_back(std::stof(line.substr(slashPos[3] + 1, (lineSpaces[2]) - (slashPos[3] + 1))));
 
-				std::cout << "third vertex: " << line.substr(lineSpaces[2] + 1, (slashPos[4]) - (lineSpaces[2] + 1)) << "\n";
+				/*std::cout << "third vertex: " << line.substr(lineSpaces[2] + 1, (slashPos[4]) - (lineSpaces[2] + 1)) << "\n";
 				std::cout << "third tex: " << line.substr(slashPos[4] + 1, (slashPos[5]) - (slashPos[4] + 1)) << "\n";
-				std::cout << "third norm: " << line.substr(slashPos[5] + 1, (line.size()) - (slashPos[5] + 1)) << "\n";
+				std::cout << "third norm: " << line.substr(slashPos[5] + 1, (line.size()) - (slashPos[5] + 1)) << "\n";*/
 
 				vertIndicies.push_back(std::stof(line.substr(lineSpaces[2] + 1, (slashPos[4]) - (lineSpaces[2] + 1))));
 				texIndicies.push_back(std::stof(line.substr(slashPos[4] + 1, (slashPos[5]) - (slashPos[4] + 1))));
@@ -265,19 +267,21 @@ void GraphicsNode::loadObj(std::string pathToFile)
 		}
 		file.close();
 
-		std::vector<float> finalVerts;
-		std::vector<float> finalNorms;
-		std::vector<float> finalTex;
+		std::vector<Vertex> finalVerts;
+		//TODO group verts and texels into vector4ds 
 		for (int i = 0; i < vertIndicies.size(); i++) {
-			float vert = vertices[vertIndicies[i] - 1];
-			float norm = normals[normIndicies[i] - 1];
-			float tex = texels[texIndicies[i] - 1];
+			Vector4D vert = vertices[vertIndicies[i] - 1];
+			Vector4D norm = normals[normIndicies[i] - 1];
+			Vector4D tex = texCoords[texIndicies[i] - 1];
 
-			finalVerts.push_back(vert);
-			finalNorms.push_back(norm);
-			finalTex.push_back(tex);
+			finalVerts.push_back(Vertex(vert, norm, tex));
 		}
 		std::cout << "finished loading obj" << "\n";
-		mesh.get()->setMesh(finalVerts, finalTex);
+		mesh.get()->setVerticies(finalVerts);
+
 	}
+	mesh.get()->genvertexarray();
+	mesh.get()->genvertexbuffer();
+	//mesh.get()->genindexbuffer();
+	mesh.get()->setattrib();
 }
