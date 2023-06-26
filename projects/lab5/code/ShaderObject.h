@@ -11,6 +11,8 @@ class ShaderObject {
 public:
 	ShaderObject(const char* vertexPath, const char* fragmentPath);
 
+	ShaderObject();
+
 	~ShaderObject();
 
 	void use();
@@ -18,6 +20,8 @@ public:
 	void setMat4(std::string& name, Matrix4D matrix);
 
 	void setVec4(std::string& name, Vector4D vector);
+
+	void setVec3(std::string& name, Vector4D vector);
 
 	unsigned int ID = 0;
 

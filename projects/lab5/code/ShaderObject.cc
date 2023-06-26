@@ -78,6 +78,10 @@ ShaderObject::ShaderObject(const char* vertexPath, const char* fragmentPath)
     
 }
 
+ShaderObject::ShaderObject()
+{
+}
+
 ShaderObject::~ShaderObject()
 {
 }
@@ -96,3 +100,10 @@ void ShaderObject::setVec4(std::string& name, Vector4D vector)
 {
 	glUniform4f(glGetUniformLocation(ID, name.c_str()), vector.x(), vector.y(), vector.z(), vector.w());
 }
+
+void ShaderObject::setVec3(std::string& name, Vector4D vector)
+{
+	glUniform3f(glGetUniformLocation(ID, name.c_str()), vector.x(), vector.y(), vector.z());
+}
+
+

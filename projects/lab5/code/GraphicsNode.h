@@ -31,11 +31,13 @@ public:
 	void setTransform(Matrix4D newTransform);
 	Matrix4D& getTransform();
 
-	void bindGraphics();
+	void bindGraphics(std::string pathToTextureFile);
 
 	void draw(Camera cam, Matrix4D projection);
 
 	void loadObj(std::string pathToFile);
+
+	void clearMemory();
 
 
 	

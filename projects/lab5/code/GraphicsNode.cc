@@ -74,7 +74,7 @@ Matrix4D& GraphicsNode::getTransform()
 	return transform;
 }
 
-void GraphicsNode::bindGraphics()
+void GraphicsNode::bindGraphics(std::string pathToTextureFile)
 {
 	
 	//ShaderObject shader("./resources/vertexshader.vs", "./resources/fragmentshader.fs");
@@ -85,7 +85,7 @@ void GraphicsNode::bindGraphics()
 
 	texture.get()->bindTex();
 	texture.get()->setTexParam();
-	texture.get()->texPictureData = stbi_load("./resources/BotellaText.jpg", &texture.get()->width, &texture.get()->height, &texture.get()->nChannels, 0);
+	texture.get()->texPictureData = stbi_load(pathToTextureFile.c_str(), &texture.get()->width, &texture.get()->height, &texture.get()->nChannels, 0);
 	if (texture.get()->texPictureData) {
 		texture.get()->loadTex(texture.get()->texPictureData);
 		std::cout << "Hey you actually hit something" << "\n";
@@ -105,33 +105,6 @@ void GraphicsNode::bindGraphics()
 
 void GraphicsNode::draw(Camera cam, Matrix4D projection)
 {	
-
-
-
-	//std::cout << "MODEL------------" << "\n";
-	//transform.print();
-	//std::cout << "----------------" << "\n";
-
-	//std::cout << "VIEW------------" << "\n";
-	////view.print();
-
-	//for (int i = 0; i < 4; ++i)
-	//	for (int j = 0; j < 4; ++j)
-	//	{
-	//		std::cout << " " << cam.getView()[i][j];
-	//		if (j == 3)
-	//			std::cout << "\n" << "\n";
-	//	}
-	//std::cout << "--------" << "\n";
-
-	//std::cout << "----------------" << "\n";
-
-	//std::cout << "PROJECTION------------" << "\n";
-	////projection.print();
-	//std::cout << "----------------" << "\n";
-
-
-
 	shader.get()->setMat4(std::string("model"), transform);
 	shader.get()->setMat4(std::string("view"), cam.getView());
 	shader.get()->setMat4(std::string("projection"), projection);
@@ -159,20 +132,16 @@ void GraphicsNode::loadObj(std::string pathToFile)
 		int lineNumber = 1;
 
 		while (std::getline(file, line)) { 
-			//std::cout << lineNumber << ": " << line << "\n";
 			std::string lineToken = line.substr(0, 2);
 			lineToken.erase(std::remove_if(lineToken.begin(), lineToken.end(), isspace), lineToken.end());
-			//std::cout << lineToken << "\n";
 			if (lineToken == "v") {
+
 				std::vector<size_t> lineSpaces;
 				std::string vertexPosition;
 				lineSpaces.push_back(line.find(" "));
 				lineSpaces.push_back(line.find(" ", lineSpaces[0] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[1] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[2] + 1));
-				/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2) << "Z" << "\n";
-				std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)) << "Z" << "\n";
-				std::cout << "third vertex position:" << line.substr(lineSpaces[2] + 1, line.size()) << "Z" << "\n";*/
 				float x = std::stof(line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2));
 				float y = std::stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)));
 				float z = std::stof(line.substr(lineSpaces[2] + 1, line.size()));
@@ -186,9 +155,6 @@ void GraphicsNode::loadObj(std::string pathToFile)
 				lineSpaces.push_back(line.find(" ", lineSpaces[0] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[1] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[2] + 1));
-				/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 2)) << "Z" << "\n";
-				std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)) << "Z" << "\n";
-				std::cout << "third vertex position:" << line.substr(lineSpaces[2] + 1, line.size()) << "Z" << "\n";*/
 				float x = std::stof(line.substr(lineSpaces[0] + 1, lineSpaces[1] - 2));
 				float y = std::stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)));
 				float z = std::stof(line.substr(lineSpaces[2] + 1, line.size()));
@@ -201,16 +167,12 @@ void GraphicsNode::loadObj(std::string pathToFile)
 				lineSpaces.push_back(line.find(" ", lineSpaces[0] + 1));
 				lineSpaces.push_back(line.find(" ", lineSpaces[1] + 1));
 				if (lineSpaces[2] == UINT64_MAX) {
-					/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)) << "Z" << "\n";
-					std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, line.size()) << "Z" << "\n";*/
 					float x = std::stof(line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)));
 					float y = std::stof(line.substr(lineSpaces[1] + 1, line.size()));
 					texCoords.push_back(Vector4D(x, y, 0.0f, 0.0f));
 					continue;
 				}
 				//why even have a third texel AAAHHH
-				/*std::cout << "first vertex position:" << line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)) << "Z" << "\n";
-				std::cout << "second vertex position:" << line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)) << "Z" << "\n"*/
 				float x = stof(line.substr(lineSpaces[0] + 1, (lineSpaces[1]) - (lineSpaces[0] + 1)));
 				float y = stof(line.substr(lineSpaces[1] + 1, (lineSpaces[2]) - (lineSpaces[1] + 1)));
 				texCoords.push_back(Vector4D(x, y, 0.0f, 0.0f));
@@ -227,35 +189,19 @@ void GraphicsNode::loadObj(std::string pathToFile)
 				for (int i = 0; i < 5; i++) {
 					slashPos.push_back(line.find("/", slashPos[i] + 1));
 				}
-				/*std::cout << "slashes found at:";
-				for (int i = 0; i < 5; i++) {
-					std::cout << " " << slashPos[i] << " ";
-				}*/
 				if (slashPos[4] == UINT64_MAX) {
 					std::cout << "\n";
 					throw std::invalid_argument("Faces is not in the format of X/Y/Z");
 				}
 				std::cout << "\n";
-				/*std::cout << "first vertex: " << line.substr(lineSpaces[0] + 1, (slashPos[0]) - (lineSpaces[0] + 1)) << "\n";
-				std::cout << "first tex: " << line.substr(slashPos[0] + 1, (slashPos[1]) - (slashPos[0] + 1)) << "\n";
-				std::cout << "first norm: " << line.substr(slashPos[1] + 1, (lineSpaces[1]) - (slashPos[1] + 1)) << "\n";*/
-
+				
 				vertIndicies.push_back(std::stof(line.substr(lineSpaces[0] + 1, (slashPos[0]) - (lineSpaces[0] + 1))));
 				texIndicies.push_back(std::stof(line.substr(slashPos[0] + 1, (slashPos[1]) - (slashPos[0] + 1))));
 				normIndicies.push_back(std::stof(line.substr(slashPos[1] + 1, (lineSpaces[1]) - (slashPos[1] + 1))));
-				
-
-				/*std::cout << "second vertex: " << line.substr(lineSpaces[1] + 1, (slashPos[2]) - (lineSpaces[1] + 1)) << "\n";
-				std::cout << "second tex: " << line.substr(slashPos[2] + 1, (slashPos[3]) - (slashPos[2] + 1)) << "\n";
-				std::cout << "second norm: " << line.substr(slashPos[3] + 1, (lineSpaces[2]) - (slashPos[3] + 1)) << "\n";*/
 
 				vertIndicies.push_back(std::stof(line.substr(lineSpaces[1] + 1, (slashPos[2]) - (lineSpaces[1] + 1))));
 				texIndicies.push_back(std::stof(line.substr(slashPos[2] + 1, (slashPos[3]) - (slashPos[2] + 1))));
 				normIndicies.push_back(std::stof(line.substr(slashPos[3] + 1, (lineSpaces[2]) - (slashPos[3] + 1))));
-
-				/*std::cout << "third vertex: " << line.substr(lineSpaces[2] + 1, (slashPos[4]) - (lineSpaces[2] + 1)) << "\n";
-				std::cout << "third tex: " << line.substr(slashPos[4] + 1, (slashPos[5]) - (slashPos[4] + 1)) << "\n";
-				std::cout << "third norm: " << line.substr(slashPos[5] + 1, (line.size()) - (slashPos[5] + 1)) << "\n";*/
 
 				vertIndicies.push_back(std::stof(line.substr(lineSpaces[2] + 1, (slashPos[4]) - (lineSpaces[2] + 1))));
 				texIndicies.push_back(std::stof(line.substr(slashPos[4] + 1, (slashPos[5]) - (slashPos[4] + 1))));
@@ -268,7 +214,6 @@ void GraphicsNode::loadObj(std::string pathToFile)
 		file.close();
 
 		std::vector<Vertex> finalVerts;
-		//TODO group verts and texels into vector4ds 
 		for (int i = 0; i < vertIndicies.size(); i++) {
 			Vector4D vert = vertices[vertIndicies[i] - 1];
 			Vector4D norm = normals[normIndicies[i] - 1];
@@ -282,6 +227,12 @@ void GraphicsNode::loadObj(std::string pathToFile)
 	}
 	mesh.get()->genvertexarray();
 	mesh.get()->genvertexbuffer();
-	//mesh.get()->genindexbuffer();
 	mesh.get()->setattrib();
+}
+
+void GraphicsNode::clearMemory()
+{
+	glDeleteVertexArrays(1, &mesh.get()->vertexarray);
+	glDeleteBuffers(1, &mesh.get()->vertexbuffer);
+	glDeleteBuffers(1, &mesh.get()->indexbuffer);
 }
