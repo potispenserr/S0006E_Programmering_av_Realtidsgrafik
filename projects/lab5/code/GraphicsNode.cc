@@ -69,6 +69,11 @@ void GraphicsNode::setTransform(Matrix4D newTransform)
 	transform = newTransform;
 }
 
+void GraphicsNode::updateTransform(Matrix4D transformToAdd)
+{
+	transform = transform * transformToAdd;
+}
+
 Matrix4D& GraphicsNode::getTransform()
 {
 	return transform;
@@ -105,6 +110,7 @@ void GraphicsNode::bindGraphics(std::string pathToTextureFile)
 
 void GraphicsNode::draw(Camera cam, Matrix4D projection)
 {	
+	shader.get()->use();
 	shader.get()->setMat4(std::string("model"), transform);
 	shader.get()->setMat4(std::string("view"), cam.getView());
 	shader.get()->setMat4(std::string("projection"), projection);
@@ -190,10 +196,8 @@ void GraphicsNode::loadObj(std::string pathToFile)
 					slashPos.push_back(line.find("/", slashPos[i] + 1));
 				}
 				if (slashPos[4] == UINT64_MAX) {
-					std::cout << "\n";
 					throw std::invalid_argument("Faces is not in the format of X/Y/Z");
 				}
-				std::cout << "\n";
 				
 				vertIndicies.push_back(std::stof(line.substr(lineSpaces[0] + 1, (slashPos[0]) - (lineSpaces[0] + 1))));
 				texIndicies.push_back(std::stof(line.substr(slashPos[0] + 1, (slashPos[1]) - (slashPos[0] + 1))));

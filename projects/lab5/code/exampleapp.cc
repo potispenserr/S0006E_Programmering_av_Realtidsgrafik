@@ -9,6 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include "LightNode.h"
 
 
 
@@ -106,6 +107,13 @@ namespace Example
 		cam.camFront = Vector4D(0.0f, 0.0f, -1.0f);
 		cam.camUp = Vector4D(0.0f, 1.0f, 0.0f);
 
+		LightNode light;
+		light.lightColor = Vector4D(1.0f, 1.0f, 1.0f);
+		light.position = Vector4D(-5.0f, -2.0f, 0.0f);
+		light.intensity = 1;
+		
+		light.bindLighting();
+
 		gn.setMesh(MeshResource());
 		gn.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
 		gn.setTexture(TextureResource());
@@ -143,9 +151,12 @@ namespace Example
 		float lastY = 384.0f;
 		bool firstRotation = true;
 
+		Vector4D lightPosition(1.2f, 1.0f, 2.0f);
+
 		//render loop
 		while (this->window->IsOpen())
 		{
+			//light.lightColor = Vector4D(1.0f, 1.0f, 1.0f);
 
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			this->window->Update();
@@ -153,7 +164,9 @@ namespace Example
 			deltaTime = currentFrame - lastFrame;	
 			lastFrame = currentFrame;
 
-			
+			/*light.intensity = (float)cos(glfwGetTime());
+			std::cout << light.intensity << "\n";
+			*/
 
 			window->SetKeyPressFunction([this](int32 asciikey, int32 argb, int32 status, int32 mod)
 			{
@@ -253,8 +266,9 @@ namespace Example
 				
 				});
 			cam.setView();
-			gn.draw(cam, projection);
-			gn2.draw(cam, projection);
+			//gn.draw(cam, projection);
+			//gn2.draw(cam, projection);
+			light.render(cam, projection);
 
 			///     _             _          __  __ 
 			///    | |           | |        / _|/ _|

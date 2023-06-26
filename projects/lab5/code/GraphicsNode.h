@@ -29,6 +29,7 @@ public:
 
 	void setTransform(Vector4D newTransform);
 	void setTransform(Matrix4D newTransform);
+	void updateTransform(Matrix4D transformToAdd);
 	Matrix4D& getTransform();
 
 	void bindGraphics(std::string pathToTextureFile);
