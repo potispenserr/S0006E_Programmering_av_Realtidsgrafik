@@ -23,6 +23,8 @@ public:
 
 	void setVec3(std::string& name, Vector4D vector);
 
+	void setFloat(std::string& name, float number);
+
 	unsigned int ID = 0;
 
 };

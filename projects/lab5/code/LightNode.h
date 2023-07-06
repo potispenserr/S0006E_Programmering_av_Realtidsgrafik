@@ -5,7 +5,7 @@ class LightNode
 public:
 	LightNode();
 	~LightNode();
-	Vector4D position;
+	Vector4D lightPos;
 	Vector4D lightColor;
 	//intensity ranges from 0 - 1
 	float intensity = 0;

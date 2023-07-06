@@ -28,7 +28,7 @@ void MeshResource::setattrib(){
 
 	//enable the normal attribute
 	glEnableVertexAttribArray(1);
-	//set texture attributes
+	//set normal attributes
 	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, meshNorm));
 
 	//enable the texture attribute

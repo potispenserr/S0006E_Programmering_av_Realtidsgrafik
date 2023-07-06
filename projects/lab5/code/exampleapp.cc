@@ -109,8 +109,8 @@ namespace Example
 
 		LightNode light;
 		light.lightColor = Vector4D(1.0f, 1.0f, 1.0f);
-		light.position = Vector4D(-5.0f, -2.0f, 0.0f);
-		light.intensity = 1;
+		light.lightPos = Vector4D(-5.0f, -2.0f, 0.0f);
+		light.intensity = 0.1;
 		
 		light.bindLighting();
 
