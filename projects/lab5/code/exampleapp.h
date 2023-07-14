@@ -15,6 +15,7 @@
 #include "Camera.h"
 #include "Matrix4D.h"
 #include "Vector4D.h"
+#include "LightNode.h"
 namespace Example
 {
 class ExampleApp : public Core::App

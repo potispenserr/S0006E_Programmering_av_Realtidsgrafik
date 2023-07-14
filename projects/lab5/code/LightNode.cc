@@ -16,6 +16,7 @@ LightNode::~LightNode()
 void LightNode::bindLighting()
 {
 	
+	lightCube.updateTransform(lightCube.getTransform().translation(lightPos));
 	glGenVertexArrays(1, &lightVAO);
 	glBindVertexArray(lightVAO);
 
@@ -37,22 +38,29 @@ void LightNode::bindLighting()
 	lightShader.setFloat(std::string("ambientIntensity"), 0.1f);
 	//glUniform1f(glGetUniformLocation(lightShader.ID, "ambientIntensity"), 0.1);
 	
-	model = model * model.scale(Vector4D(0.5f, 0.5f, 0.5f));
+	//model = model * model.scale(Vector4D(0.5f, 0.5f, 0.5f));
 
 	model = model * model.translation(Vector4D(0.5f, 0.0f, -0.5f));
 
-	lightCube.updateTransform(lightCube.getTransform().translation(lightPos));
-	lightCube.updateTransform(lightCube.getTransform().scale(Vector4D(0.2f, 0.2f, 0.2f)));
+	model = model * Matrix4D::scale(Vector4D(0.5f, 0.5f, 0.5f));
+
+	//lightCube.updateTransform(lightCube.getTransform().scale(Vector4D(0.2f, 0.2f, 0.2f)));
+	lightCube.setTransform(Matrix4D::scale((Vector4D(0.2f, 0.2f, 0.2f))));
 }
 
 void LightNode::render(Camera cam, Matrix4D projection)
 {
+	Matrix4D translate;
+	lightCube.setTransform(translate.translation(lightPos));
+	lightCube.updateTransform(Matrix4D::scale(Vector4D(0.2f, 0.2f, 0.2f)));
 	lightCube.draw(cam, projection);
 
 	/*lightShader.use();
 	lightColor = lightColor * intensity;
 	lightShader.setVec3(std::string("objectColor"), Vector4D(1.0f, 0.5f, 0.31f));
 	lightShader.setVec3(std::string("lightColor"), lightColor);*/
+	
+	//Vector4D camPos = cam.camPos * 1;
 
 	lightShader.use();
 	lightShader.setMat4(std::string("model"), model);
@@ -60,6 +68,9 @@ void LightNode::render(Camera cam, Matrix4D projection)
 	lightShader.setMat4(std::string("projection"), projection);
 
 	lightShader.setVec3(std::string("lightPos"), this->lightPos);
+	lightShader.setVec3(std::string("viewPosition"), cam.camPos);
+
+
 
 	glBindVertexArray(lightVAO);
 	glDrawArrays(GL_TRIANGLES, 0, lightCube.getMesh().get()->verticies.size());

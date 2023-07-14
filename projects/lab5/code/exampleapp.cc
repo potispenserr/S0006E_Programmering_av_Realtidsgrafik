@@ -9,7 +9,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
-#include "LightNode.h"
+
 
 
 
@@ -107,9 +107,11 @@ namespace Example
 		cam.camFront = Vector4D(0.0f, 0.0f, -1.0f);
 		cam.camUp = Vector4D(0.0f, 1.0f, 0.0f);
 
+		Vector4D lightPosition(1.2f, 1.0f, 2.0f);
+
 		LightNode light;
 		light.lightColor = Vector4D(1.0f, 1.0f, 1.0f);
-		light.lightPos = Vector4D(-5.0f, -2.0f, 0.0f);
+		light.lightPos = lightPosition;
 		light.intensity = 0.1;
 		
 		light.bindLighting();
@@ -151,7 +153,7 @@ namespace Example
 		float lastY = 384.0f;
 		bool firstRotation = true;
 
-		Vector4D lightPosition(1.2f, 1.0f, 2.0f);
+		
 
 		//render loop
 		while (this->window->IsOpen())
@@ -167,8 +169,10 @@ namespace Example
 			/*light.intensity = (float)cos(glfwGetTime());
 			std::cout << light.intensity << "\n";
 			*/
+			//light.lightPos.x() = 10.0f + cos(glfwGetTime()) * 4.0f;
+			//light.lightPos.y() = sin(glfwGetTime() / 2.0f) * 1.0f;
 
-			window->SetKeyPressFunction([this](int32 asciikey, int32 argb, int32 status, int32 mod)
+			window->SetKeyPressFunction([this, &light](int32 asciikey, int32 argb, int32 status, int32 mod)
 			{
 				std::cout << "asciikey: " << asciikey << " argb: " << argb << " status: " << status << " mod: " << mod << "\n";
 
@@ -188,8 +192,28 @@ namespace Example
 					case GLFW_KEY_D:
 						cam.camPos = cam.camPos + Vector4D::cross(cam.camFront, cam.camUp).norm() * camSpeed;
 						break;
+					case GLFW_KEY_J:
+						light.lightPos = light.lightPos + Vector4D(0.5f, 0.0f, 0.0f);
+						break;
+					case GLFW_KEY_K:
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.0f, 0.5f);
+						break;
+					case GLFW_KEY_L:
+						light.lightPos = light.lightPos + Vector4D(-0.5f, 0.0f, 0.0f);
+						break;
+					case GLFW_KEY_I:
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.0f, -0.5f);
+						break;
+					case GLFW_KEY_U:
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.5f, 0.0f);
+						break;
+					case GLFW_KEY_O:
+						light.lightPos = light.lightPos + Vector4D(0.0f, -0.5f, 0.0f);
+						break;
 
 					}
+
+
 					
 				}
 				else if (status == 2) {
@@ -207,7 +231,27 @@ namespace Example
 					case GLFW_KEY_D:
 						cam.camPos = cam.camPos + Vector4D::cross(cam.camFront, cam.camUp).norm() * camSpeed;
 						break;
+					case GLFW_KEY_J:
+						light.lightPos = light.lightPos + Vector4D(0.5f, 0.0f, 0.0f);
+						break;
+					case GLFW_KEY_K:
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.0f, 0.5f);
+						break;
+					case GLFW_KEY_L:
+						light.lightPos = light.lightPos + Vector4D(-0.5f, 0.0f, 0.0f);
+						break;
+					case GLFW_KEY_I:
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.0f, -0.5f);
+						break;
+					case GLFW_KEY_U:
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.5f, 0.0f);
+						break;
+					case GLFW_KEY_O:
+						light.lightPos = light.lightPos + Vector4D(0.0f, -0.5f, 0.0f);
+						break;
+					
 					}
+
 
 				}
 
