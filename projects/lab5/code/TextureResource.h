@@ -19,8 +19,7 @@ public:
 	float borderColor[4] = { 1.0f, 1.0f, 0.0f, 1.0f };
 
 	void setTexParam();
-	void bindTex();
-	void loadTex(unsigned char* texData);
+	void loadTex(std::string path);
 
 
 	int width;

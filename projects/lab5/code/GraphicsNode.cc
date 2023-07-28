@@ -1,5 +1,4 @@
 #include "GraphicsNode.h"
-#include "stb_image.h"
 #include <fstream>
 #include <sstream>
 #include <stdexcept>
@@ -81,31 +80,11 @@ Matrix4D& GraphicsNode::getTransform()
 
 void GraphicsNode::bindGraphics(std::string pathToTextureFile)
 {
-	
-	//ShaderObject shader("./resources/vertexshader.vs", "./resources/fragmentshader.fs");
 
-	
-
-	stbi_set_flip_vertically_on_load(true);
-
-	texture.get()->bindTex();
-	texture.get()->setTexParam();
-	texture.get()->texPictureData = stbi_load(pathToTextureFile.c_str(), &texture.get()->width, &texture.get()->height, &texture.get()->nChannels, 0);
-	if (texture.get()->texPictureData) {
-		texture.get()->loadTex(texture.get()->texPictureData);
-		std::cout << "Hey you actually hit something" << "\n";
-	}
-	else {
-		std::cout << stbi_failure_reason() << "\n";
-		std::cout << "Nice shootin' Tex" << "\n";
-	}
-	stbi_image_free(texture.get()->texPictureData);
+	texture.get()->loadTex(pathToTextureFile);
 	shader.get()->use();
+	glUniform1i(glGetUniformLocation(shader.get()->ID, "textureShit"), 0);
 
-	glUniform1i(glGetUniformLocation(shader.get()->ID, "texture1"), 0);
-
-	glEnable(GL_DEPTH_TEST);
-	glDepthFunc(GL_LESS);
 }
 
 void GraphicsNode::draw(Camera cam, Matrix4D projection)

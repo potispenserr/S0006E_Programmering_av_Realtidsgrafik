@@ -1,5 +1,6 @@
 #include "TextureResource.h"
-
+#include "stb_image.h"
+#include <iostream>
 
 // sets all texture parameters
 void TextureResource::setTexParam() {
@@ -11,22 +12,33 @@ void TextureResource::setTexParam() {
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 }
 
-///binds the textures and sets a id
-void TextureResource::bindTex() {
-	glGenTextures(1, &texID);
-	glBindTexture(GL_TEXTURE_2D, texID);
-	
 
-}
-///takes texture data from stbi and generates mipmaps
-void TextureResource::loadTex(unsigned char* texData) {
-	if (this->nChannels == 3) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texData);
-		glGenerateMipmap(GL_TEXTURE_2D);
+///loads texture data from stbi and generates mipmaps
+void TextureResource::loadTex(std::string path) {
+	stbi_set_flip_vertically_on_load(true);
+	glGenTextures(1, &texID);
+
+	texPictureData = stbi_load(path.c_str(), &width, &height, &nChannels, 0);
+	if (texPictureData) {
+		if (this->nChannels == 3) {
+			glBindTexture(GL_TEXTURE_2D, texID);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, texPictureData);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		else if (this->nChannels == 4) {
+			glBindTexture(GL_TEXTURE_2D, texID);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texPictureData);
+			glGenerateMipmap(GL_TEXTURE_2D);
+		}
+		this->setTexParam();
+
+		std::cout << "Hey you actually hit something" << "\n";
 	}
-	else if (this->nChannels == 4) {
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, texData);
-		glGenerateMipmap(GL_TEXTURE_2D);
+	else {
+		std::cout << stbi_failure_reason() << "\n";
+		std::cout << "Nice shootin' Tex" << "\n";
 	}
+	stbi_image_free(texPictureData);
+	
 }
 

@@ -12,6 +12,7 @@ public:
 	GraphicsNode lightCube;
 	ShaderObject lightShader;
 	Matrix4D model;
+	TextureResource texRes;
 	unsigned int lightVAO = -1;
 
 	void bindLighting();

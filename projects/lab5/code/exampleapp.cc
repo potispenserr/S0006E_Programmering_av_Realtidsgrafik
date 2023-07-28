@@ -99,6 +99,9 @@ namespace Example
 	void
 		ExampleApp::Run()
 	{
+		glEnable(GL_DEPTH_TEST);
+		glDepthFunc(GL_LESS);
+
 		Matrix4D projection = projection.perspective(75.0f, 800.0f / 600.0f, 0.1f, 100.0f);
 		//glm::mat4 projection = glm::perspective(glm::radians(75.0f), (float)800 / (float)600, 0.1f, 100.0f);
 		//Camera cam(Vector4D(0.0f, 0.0f, 3.0f), Vector4D(0.0f, 0.0f, 0.0f), Vector4D(0.0f, 0.0f, -1.0f), Vector4D(0.0f, 1.0f, 0.0f));
@@ -107,7 +110,7 @@ namespace Example
 		cam.camFront = Vector4D(0.0f, 0.0f, -1.0f);
 		cam.camUp = Vector4D(0.0f, 1.0f, 0.0f);
 
-		Vector4D lightPosition(1.2f, 1.0f, 2.0f);
+		Vector4D lightPosition(-14.2f, 1.0f, 2.0f);
 
 		LightNode light;
 		light.lightColor = Vector4D(1.0f, 1.0f, 1.0f);
@@ -116,28 +119,28 @@ namespace Example
 		
 		light.bindLighting();
 
-		gn.setMesh(MeshResource());
+		/*gn.setMesh(MeshResource());
 		gn.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
 		gn.setTexture(TextureResource());
 		gn.setTransform(Matrix4D());
-		gn.loadObj("./resources/CoronaFixed.obj");
+		gn.loadObj("./resources/CoronaFixed.obj");*/
 
-		gn2.setMesh(MeshResource());
+		/*gn2.setMesh(MeshResource());
 		gn2.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
 		gn2.setTexture(TextureResource());
 		gn2.setTransform(Matrix4D());
-		gn2.loadObj("./resources/cube.obj");
+		gn2.loadObj("./resources/cube.obj");*/
 
 
-		
-		gn.bindGraphics("./resources/BotellaText.jpg");
-		gn2.bindGraphics("./resources/container2.jpg");
+
+		//gn.bindGraphics("./resources/BotellaText.jpg");
+		//gn2.bindGraphics("./resources/container2.jpg");
 		Matrix4D rot;
-		gn.setTransform(gn.getTransform() * gn.getTransform().scale(Vector4D(0.05f, 0.05f, 0.05f)));
-		gn.setTransform(gn.getTransform() * rot.rotz(90) * rot.rotx(130) * rot.roty(100));
+		/*gn.setTransform(gn.getTransform() * gn.getTransform().scale(Vector4D(0.2f, 0.2f, 0.2f)));
+		gn.setTransform(gn.getTransform() * rot.rotz(90) * rot.rotx(130) * rot.roty(100));*/
 
-		gn2.setTransform(gn2.getTransform().scale(Vector4D(0.5f, 0.5f, 0.5f)));
-		gn2.setTransform(gn2.getTransform() * gn2.getTransform().translation(Vector4D(1.0f, 0.0f, 0.0f)));
+		/*gn2.setTransform(gn2.getTransform().scale(Vector4D(0.5f, 0.5f, 0.5f)));
+		gn2.setTransform(gn2.getTransform() * gn2.getTransform().translation(Vector4D(1.0f, 0.0f, 0.0f)));*/
 
 
 		int width;
@@ -205,10 +208,17 @@ namespace Example
 						light.lightPos = light.lightPos + Vector4D(0.0f, 0.0f, -0.5f);
 						break;
 					case GLFW_KEY_U:
-						light.lightPos = light.lightPos + Vector4D(0.0f, 0.5f, 0.0f);
+						light.lightPos = light.lightPos + Vector4D(0.0f, -0.5f, 0.0f);
 						break;
 					case GLFW_KEY_O:
-						light.lightPos = light.lightPos + Vector4D(0.0f, -0.5f, 0.0f);
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.5f, 0.0f);
+						break;
+
+					case GLFW_KEY_Q:
+						cam.camPos = cam.camPos + Vector4D(0.0f, 1.0f, 0.0f) * camSpeed;
+						break;
+					case GLFW_KEY_E:
+						cam.camPos = cam.camPos + Vector4D(0.0f, -1.0f, 0.0f) * camSpeed;
 						break;
 
 					}
@@ -244,10 +254,17 @@ namespace Example
 						light.lightPos = light.lightPos + Vector4D(0.0f, 0.0f, -0.5f);
 						break;
 					case GLFW_KEY_U:
-						light.lightPos = light.lightPos + Vector4D(0.0f, 0.5f, 0.0f);
+						light.lightPos = light.lightPos + Vector4D(0.0f, -0.5f, 0.0f);
 						break;
 					case GLFW_KEY_O:
-						light.lightPos = light.lightPos + Vector4D(0.0f, -0.5f, 0.0f);
+						light.lightPos = light.lightPos + Vector4D(0.0f, 0.5f, 0.0f);
+						break;
+
+					case GLFW_KEY_Q:
+						cam.camPos = cam.camPos + Vector4D(0.0f, 1.0f, 0.0f) * camSpeed;
+						break;
+					case GLFW_KEY_E:
+						cam.camPos = cam.camPos + Vector4D(0.0f, -1.0f, 0.0f) * camSpeed;
 						break;
 					
 					}
@@ -310,9 +327,9 @@ namespace Example
 				
 				});
 			cam.setView();
+			light.render(cam, projection);
 			//gn.draw(cam, projection);
 			//gn2.draw(cam, projection);
-			light.render(cam, projection);
 
 			///     _             _          __  __ 
 			///    | |           | |        / _|/ _|

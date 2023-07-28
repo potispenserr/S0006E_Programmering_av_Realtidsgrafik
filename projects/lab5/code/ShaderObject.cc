@@ -111,4 +111,9 @@ void ShaderObject::setFloat(std::string& name, float number)
 	glUniform1f(glGetUniformLocation(ID, name.c_str()), number);
 }
 
+void ShaderObject::setInt(std::string& name, int number)
+{
+	glUniform1i(glGetUniformLocation(ID, name.c_str()), number);
+}
+
 

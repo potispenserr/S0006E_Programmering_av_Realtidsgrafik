@@ -25,6 +25,8 @@ public:
 
 	void setFloat(std::string& name, float number);
 
+	void setInt(std::string& name, int number);
+
 	unsigned int ID = 0;
 
 };

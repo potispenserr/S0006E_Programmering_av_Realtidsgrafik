@@ -466,7 +466,7 @@ public:
 	///
 	///Rotation around x-axis
 	///
-	Matrix4D rotx(float d) {
+	static Matrix4D rotx(float d) {
 		float cs = cos(d);
 		float sn = sin(d);
 		Matrix4D rot(1, 0, 0, 0, 
@@ -479,7 +479,7 @@ public:
 	///
 	///Rotation around y-axis 
 	///
-	Matrix4D roty(float d) {
+	static Matrix4D roty(float d) {
 		float cs = cos(d);
 		float sn = sin(d);
 		Matrix4D rot(cs, 0, -sn, 0,
@@ -492,7 +492,7 @@ public:
 	///
 	///Rotation around z-axis 
 	///
-	Matrix4D rotz(float d) {
+	static Matrix4D rotz(float d) {
 		float cs = cos(d);
 		float sn = sin(d);
 		Matrix4D rot(
@@ -505,7 +505,7 @@ public:
 	///
 	///Rotation around Vector
 	///
-	Matrix4D rodriguesrotate(Vector4D vec, float d) {
+	static Matrix4D rodriguesrotate(Vector4D vec, float d) {
 		float cs = cos(d);
 		float onedown = 1 - cos(d); 
 		float sn = sin(d);
