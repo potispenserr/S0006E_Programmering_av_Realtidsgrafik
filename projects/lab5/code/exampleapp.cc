@@ -102,9 +102,10 @@ namespace Example
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LESS);
 
+		ShaderObject lightShader = ShaderObject("./resources/LightingVS.vs", "./resources/LightingFS.fs");
+
 		Matrix4D projection = projection.perspective(75.0f, 800.0f / 600.0f, 0.1f, 100.0f);
-		//glm::mat4 projection = glm::perspective(glm::radians(75.0f), (float)800 / (float)600, 0.1f, 100.0f);
-		//Camera cam(Vector4D(0.0f, 0.0f, 3.0f), Vector4D(0.0f, 0.0f, 0.0f), Vector4D(0.0f, 0.0f, -1.0f), Vector4D(0.0f, 1.0f, 0.0f));
+
 		cam.camPos = Vector4D(0.0f, 0.0f, 3.0f);
 		cam.camTarget = Vector4D(0.0f, 0.0f, 0.0f);
 		cam.camFront = Vector4D(0.0f, 0.0f, -1.0f);
@@ -112,35 +113,35 @@ namespace Example
 
 		Vector4D lightPosition(-14.2f, 1.0f, 2.0f);
 
-		LightNode light;
+		
+		GraphicsNode lightCube;
+
+		lightCube.setMesh(MeshResource());
+		lightCube.setShader(ShaderObject("./resources/LightCubeVS.vs", "./resources/LightCubeFS.fs"));
+		lightCube.setTexture(TextureResource());
+		lightCube.setTransform(Matrix4D());
+		lightCube.loadObj("./resources/cube2.obj");
+		lightCube.bindGraphics("./resources/container2fixed.png");
+
+		gn.setMesh(MeshResource());
+		gn.setShader(lightShader);
+		gn.setTexture(TextureResource());
+		gn.setTransform(Matrix4D());
+		gn.loadObj("./resources/cube2.obj");
+		gn.bindGraphics("./resources/container2fixed.png");
+
+
+		LightNode light = LightNode(lightShader);
 		light.lightColor = Vector4D(1.0f, 1.0f, 1.0f);
 		light.lightPos = lightPosition;
 		light.intensity = 0.1;
-		
-		light.bindLighting();
 
-		/*gn.setMesh(MeshResource());
-		gn.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
-		gn.setTexture(TextureResource());
-		gn.setTransform(Matrix4D());
-		gn.loadObj("./resources/CoronaFixed.obj");*/
-
-		/*gn2.setMesh(MeshResource());
-		gn2.setShader(ShaderObject("./resources/vertexshader.vs", "./resources/fragmentshader.fs"));
-		gn2.setTexture(TextureResource());
-		gn2.setTransform(Matrix4D());
-		gn2.loadObj("./resources/cube.obj");*/
+		light.setupLighting();
 
 
 
-		//gn.bindGraphics("./resources/BotellaText.jpg");
-		//gn2.bindGraphics("./resources/container2.jpg");
 		Matrix4D rot;
-		/*gn.setTransform(gn.getTransform() * gn.getTransform().scale(Vector4D(0.2f, 0.2f, 0.2f)));
-		gn.setTransform(gn.getTransform() * rot.rotz(90) * rot.rotx(130) * rot.roty(100));*/
 
-		/*gn2.setTransform(gn2.getTransform().scale(Vector4D(0.5f, 0.5f, 0.5f)));
-		gn2.setTransform(gn2.getTransform() * gn2.getTransform().translation(Vector4D(1.0f, 0.0f, 0.0f)));*/
 
 
 		int width;
@@ -170,16 +171,17 @@ namespace Example
 			lastFrame = currentFrame;
 
 			/*light.intensity = (float)cos(glfwGetTime());
-			std::cout << light.intensity << "\n";
-			*/
-			//light.lightPos.x() = 10.0f + cos(glfwGetTime()) * 4.0f;
-			//light.lightPos.y() = sin(glfwGetTime() / 2.0f) * 1.0f;
+			std::cout << light.intensity << "\n";*/
+			
+			
+
+			//std::cout << "Lightpos X:" << light.lightPos.x() << " Y:" << light.lightPos.y() << " Z:" << light.lightPos.z() << "\n";
 
 			window->SetKeyPressFunction([this, &light](int32 asciikey, int32 argb, int32 status, int32 mod)
 			{
-				std::cout << "asciikey: " << asciikey << " argb: " << argb << " status: " << status << " mod: " << mod << "\n";
+				//std::cout << "asciikey: " << asciikey << " argb: " << argb << " status: " << status << " mod: " << mod << "\n";
 
-				const float camSpeed = 3.0f * deltaTime;
+				const float camSpeed = 5.0f * deltaTime;
 
 				if (status == 1) {
 					switch (asciikey) {
@@ -327,9 +329,9 @@ namespace Example
 				
 				});
 			cam.setView();
-			light.render(cam, projection);
-			//gn.draw(cam, projection);
-			//gn2.draw(cam, projection);
+			light.updateLighting(cam, projection, lightCube);
+			gn.draw(cam, projection, light.lightPos);
+			lightCube.draw(cam, projection, light.lightPos);
 
 			///     _             _          __  __ 
 			///    | |           | |        / _|/ _|

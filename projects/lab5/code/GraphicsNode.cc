@@ -83,16 +83,17 @@ void GraphicsNode::bindGraphics(std::string pathToTextureFile)
 
 	texture.get()->loadTex(pathToTextureFile);
 	shader.get()->use();
-	glUniform1i(glGetUniformLocation(shader.get()->ID, "textureShit"), 0);
 
 }
 
-void GraphicsNode::draw(Camera cam, Matrix4D projection)
+void GraphicsNode::draw(Camera cam, Matrix4D projection, Vector4D lightPosition)
 {	
 	shader.get()->use();
 	shader.get()->setMat4(std::string("model"), transform);
 	shader.get()->setMat4(std::string("view"), cam.getView());
 	shader.get()->setMat4(std::string("projection"), projection);
+	shader.get()->setVec3(std::string("light.pos"), lightPosition);
+	shader.get()->setVec3(std::string("viewPosition"), cam.camPos);
 	glActiveTexture(GL_TEXTURE0);
 	glBindTexture(GL_TEXTURE_2D, texture.get()->texID);
 

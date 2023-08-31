@@ -12,6 +12,8 @@ public:
 
 	}
 
+	TextureResource(std::string pathToFile);
+
 	~TextureResource() {
 		glDeleteTextures(1, &texID);
 	}
@@ -22,9 +24,9 @@ public:
 	void loadTex(std::string path);
 
 
-	int width;
-	int height;
-	int nChannels;
+	int width = 0;
+	int height = 0;
+	int nChannels = 0;
 
 	unsigned int texID = 0;
 	unsigned char* texPictureData = NULL;

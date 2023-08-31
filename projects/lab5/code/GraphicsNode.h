@@ -34,7 +34,7 @@ public:
 
 	void bindGraphics(std::string pathToTextureFile);
 
-	void draw(Camera cam, Matrix4D projection);
+	void draw(Camera cam, Matrix4D projection, Vector4D lightPosition);
 
 	void loadObj(std::string pathToFile);
 

@@ -2,6 +2,11 @@
 #include "stb_image.h"
 #include <iostream>
 
+TextureResource::TextureResource(std::string pathToFile)
+{
+	loadTex(pathToFile);
+}
+
 // sets all texture parameters
 void TextureResource::setTexParam() {
 	//texture wrapping

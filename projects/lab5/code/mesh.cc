@@ -16,26 +16,29 @@ void MeshResource::genvertexbuffer() {
 
 /// set attributes
 void MeshResource::setattrib(){
-	//enable the vertex attribute
-	glEnableVertexAttribArray(0);
+	
 	//set vertex attributes
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)0);
+	//enable the vertex attribute
+	glEnableVertexAttribArray(0);
 
 	//set color attribute
 	/*glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
 	//enable color attribute
 	glEnableVertexAttribArray(1);*/
 
-	//enable the normal attribute
-	glEnableVertexAttribArray(1);
+	
 	//set normal attributes
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, meshNorm));
+	//enable the normal attribute
+	glEnableVertexAttribArray(1);
 
 	
+	
+	//set texture attributes
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 	//enable the texture attribute
 	glEnableVertexAttribArray(2);
-	//set texture attributes
-	glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (void*)offsetof(Vertex, texCoord));
 }
 
 /// generate vertex array object

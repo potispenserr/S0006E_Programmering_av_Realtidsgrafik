@@ -1,24 +1,23 @@
+#pragma once
 #include "Vector4D.h"
 #include "GraphicsNode.h"
 class LightNode
 {
 public:
-	LightNode();
+
+	LightNode(ShaderObject& lighting);
 	~LightNode();
 	Vector4D lightPos;
 	Vector4D lightColor;
 	//intensity ranges from 0 - 1
 	float intensity = 0;
-	GraphicsNode lightCube;
 	ShaderObject lightShader;
-	Matrix4D model;
-	TextureResource diffuseTex;
-	TextureResource specularTex;
 	unsigned int lightVAO = -1;
 
-	void bindLighting();
 
-	void render(Camera cam, Matrix4D projection);
+	void setupLighting();
+
+	void updateLighting(Camera cam, Matrix4D projection, GraphicsNode& lightCube);
 
 
 

@@ -71,7 +71,6 @@ public:
 	};*/
 
     std::vector<Vertex> verticies;
-    std::vector<float> texels;
 
 	unsigned int indicies[6]{
 		0,1,3, //first triangle 
