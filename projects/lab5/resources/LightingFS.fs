@@ -40,8 +40,8 @@ void main()
     vec3 diffuse = light.diffuse * distdiff * texture(material.textureDiffuse, TexCoordLight).rgb;
             
     vec3 viewDirection = normalize(viewPosition - fragPos);
-    vec3 reflectDirection = reflect(lightDirection, norm);
-    float spec = pow(max(dot(viewDirection, reflectDirection), 0.0), material.shininess);
+    vec3 halfway = normalize(lightDirection + viewDirection);
+    float spec = pow(max(dot(norm, halfway), 0.0), material.shininess);
     vec3 combinedSpec = light.specular * spec * texture(material.textureSpecular, TexCoordLight).rgb;  
     
 
