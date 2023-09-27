@@ -48,8 +48,8 @@ void LightNode::setupLighting()
 	lightShader.setFloat(std::string("ambientIntensity"), 0.1f);
 
 	lightShader.setInt(std::string("material.textureDiffuse"), 0);
-	lightShader.setInt(std::string("material.textureSpecular"), 1);
-	lightShader.setFloat(std::string("material.shininess"), 32.0f);
+	lightShader.setVec3(std::string("material.textureSpecular"), Vector4D(0.5f, 0.5f, 0.5f));
+	lightShader.setFloat(std::string("material.shininess"), 64.0f);
 
 	lightShader.setVec3(std::string("light.ambient"), Vector4D(0.2f, 0.2f, 0.2f));
 	lightShader.setVec3(std::string("light.diffuse"), Vector4D(0.5f, 0.5f, 0.5f));

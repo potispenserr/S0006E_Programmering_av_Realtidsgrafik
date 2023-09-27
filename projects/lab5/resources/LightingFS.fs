@@ -9,7 +9,7 @@ in vec2 TexCoordLight;
 
 struct Material {
     sampler2D textureDiffuse;
-    sampler2D textureSpecular;
+    vec3 textureSpecular;
     float shininess;
 }; 
 
@@ -40,9 +40,9 @@ void main()
     vec3 diffuse = light.diffuse * distdiff * texture(material.textureDiffuse, TexCoordLight).rgb;
             
     vec3 viewDirection = normalize(viewPosition - fragPos);
-    vec3 halfway = normalize(lightDirection + viewDirection);
+    vec3 halfway = normalize(lightDirection - viewDirection);
     float spec = pow(max(dot(norm, halfway), 0.0), material.shininess);
-    vec3 combinedSpec = light.specular * spec * texture(material.textureSpecular, TexCoordLight).rgb;  
+    vec3 combinedSpec = light.specular * (spec * material.textureSpecular);  
     
 
     vec3 result = ambient + diffuse + combinedSpec;
